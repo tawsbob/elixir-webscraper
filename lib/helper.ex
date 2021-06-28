@@ -4,7 +4,16 @@ defmodule Webscraper.Helper do
     A helper module with some of generic functions to help on development
     By Dellean Santos
     """
-
+    
+    @doc """
+    
+    return a default value if map key isnt in map 
+    
+    ## Parameters
+        - map: a map to check the key value
+        - atom: key of map as atom
+        - default_value: default value to replace in case of missing value on map
+    """
     @spec default_value_map( map(), atom(), any()  ) :: any()
     def default_value_map( map_to_check, key, default_value ) do
         if Map.has_key?(map_to_check, key) do 
@@ -14,7 +23,16 @@ defmodule Webscraper.Helper do
         end
     end
 
-
+    @doc """
+    
+    return a default value if map key isnt in map wuth type valudation
+    
+    ## Parameters
+        - map: a map to check the key value
+        - atom: key of map as atom
+        - fn_check: a function that check type of key value
+        - default_value: default value to replace in case of missing value on map
+    """
     @spec default_value_map( map(), atom(), fun(), any()  ) :: any()
     def default_value_map( map_to_check, key, fn_check, default_value ) do
         if Map.has_key?(map_to_check, key) do 
