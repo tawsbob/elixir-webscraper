@@ -1,5 +1,7 @@
 defmodule Webscraper.Helper do
 
+    alias Webscraper.LinkQueue
+
     @moduledoc """
     A helper module with some of generic functions to help on development
     By Dellean Santos
@@ -47,15 +49,6 @@ defmodule Webscraper.Helper do
         end
     end
 
-    @spec default_value( any(), any()  ) :: any()
-    def default_value( default_value_param, value_else ) do
-        if default_value_param do 
-            default_value_param 
-        else 
-            value_else
-        end
-    end
-
     @spec default_value( any(), any(), fun() ) :: any()
     def default_value( default_value_param, value_else, fn_check ) do
         
@@ -66,6 +59,36 @@ defmodule Webscraper.Helper do
         else 
             value_else
         end
+    end
+
+    #QUEUE HELPERS
+
+    def plain_links_to_model(lks) when is_list(lks) do
+        Enum.map(
+            lks,
+            fn { url, provider_name } -> 
+                LinkQueue.new(%{ url: url, provider_name: provider_name }) 
+            end
+        )
+    end
+
+    def filter_duplicated_link(list_links, list_links_to_check) do
+        Enum.filter(
+            list_links,
+            fn lnk ->
+                %LinkQueue{ url: url } = lnk
+                !check_if_lnk_in_list?( url,  list_links_to_check)
+            end
+        )
+    end
+
+    def check_if_lnk_in_list?(check_url, list) do
+        Enum.any?(
+            list,
+            fn %LinkQueue{ url: url } ->
+                check_url === url
+            end
+        )
     end
 
 end

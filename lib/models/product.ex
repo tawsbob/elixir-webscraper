@@ -23,18 +23,17 @@ defmodule Webscraper.Product do
     @doc """
     new/1 create a new Product Struct
 
-    #Parameters
+    ## Parameters
     - product_map: a map of key value
 
-    # product_map keys
+    ## product_map keys
 
-    og_image: String
-    brand: String
-    brand_slug: String
-    product_name: String
-    product_slug: String
-    spec_list: List [%Speclist{}]
-
+    - og_image: String
+    - brand: String
+    - brand_slug: String
+    - product_name: String
+    - product_slug: String
+    - spec_list: List [%Speclist{}]
     """
     @spec new( map() ) :: %__MODULE__{}
     def new( product_map ) when is_map(product_map) do

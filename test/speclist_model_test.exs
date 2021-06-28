@@ -35,7 +35,7 @@ defmodule WebscraperSpecListTest do
       spec_list =  Speclist.new(%{ title: "Seção teste", specs: "[]" })
       condition = is_struct(spec_list) and spec_list.title == "Seção teste"  and  is_list( spec_list.specs )
   
-      IO.inspect spec_list
+      #IO.inspect spec_list
   
       assert condition
   
