@@ -7,7 +7,7 @@ defmodule Webscraper.Helper do
     
     @doc """
     
-    return a default value if map key isnt in map 
+    default_value_map/3 return a default value if map key isnt in map 
     
     ## Parameters
         - map: a map to check the key value
@@ -25,7 +25,7 @@ defmodule Webscraper.Helper do
 
     @doc """
     
-    return a default value if map key isnt in map wuth type valudation
+    default_value_map/4 return a default value if map key isnt in map and with type valudation
     
     ## Parameters
         - map: a map to check the key value
