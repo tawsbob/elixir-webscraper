@@ -5,12 +5,27 @@ defmodule Webscraper.Helper do
     By Dellean Santos
     """
 
-    @spec default_value_map( map(), binary(), any()  ) :: any()
-    def default_value_map( map_to_check, key, value_else ) do
+    @spec default_value_map( map(), atom(), any()  ) :: any()
+    def default_value_map( map_to_check, key, default_value ) do
         if Map.has_key?(map_to_check, key) do 
             map_to_check[ key ]
         else 
-            value_else
+            default_value
+        end
+    end
+
+
+    @spec default_value_map( map(), atom(), fun(), any()  ) :: any()
+    def default_value_map( map_to_check, key, fn_check, default_value ) do
+        if Map.has_key?(map_to_check, key) do 
+            variable_check_test = fn_check.(default_value)
+            if variable_check_test do
+                map_to_check[ key ]
+            else
+                default_value
+            end
+        else 
+            default_value
         end
     end
 

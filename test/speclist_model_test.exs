@@ -13,7 +13,7 @@ defmodule WebscraperSpecListTest do
       
       #IO.inspect spec_list
 
-      condition = spec_list.title == "Seção teste"  and Enum.at(spec_list.specs, 0).label == "teste"
+      condition = is_struct(spec_list) and spec_list.title == "Seção teste"  and Enum.at(spec_list.specs, 0).label == "teste"
   
       assert condition
   
@@ -21,9 +21,8 @@ defmodule WebscraperSpecListTest do
   
     test "create a spec section without specs list" do
       
-      spec_list   =  Speclist.new(%{ title: "Seção teste", specs: [] })
-  
-      condition = spec_list.title == "Seção teste"  and  length( spec_list.specs ) == 0
+      spec_list =  Speclist.new(%{ title: "Seção teste", specs: [] })
+      condition = is_struct(spec_list) and spec_list.title == "Seção teste"  and  length( spec_list.specs ) == 0
   
       #IO.inspect spec_list
   
@@ -33,9 +32,8 @@ defmodule WebscraperSpecListTest do
 
     test "create a spec section passing passing specs as wrong type" do
       
-      spec_list   =  Speclist.new(%{ title: "Seção teste", specs: "[]" })
-  
-      condition = spec_list.title == "Seção teste"  and  is_list( spec_list.specs )
+      spec_list =  Speclist.new(%{ title: "Seção teste", specs: "[]" })
+      condition = is_struct(spec_list) and spec_list.title == "Seção teste"  and  is_list( spec_list.specs )
   
       IO.inspect spec_list
   

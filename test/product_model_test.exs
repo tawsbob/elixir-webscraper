@@ -18,7 +18,7 @@ defmodule WebscraperProductTest do
         spec_list: []
       })
       
-      check_was_attrs = new_product.og_image == "http://www.cdn.com/" and new_product.brand == "brand" and new_product.product_name == "product_name"
+      check_was_attrs = is_struct(new_product) and new_product.og_image == "http://www.cdn.com/" and new_product.brand == "brand" and new_product.product_name == "product_name"
   
       #IO.inspect new_product
   
@@ -40,7 +40,7 @@ defmodule WebscraperProductTest do
   
       #IO.inspect new_product
   
-      condition = new_product.brand == "brand" and new_product.spec_list.title == "Seção teste" and length(new_product.spec_list.specs) > 0
+      condition = is_struct(new_product) and new_product.brand == "brand" and new_product.spec_list.title == "Seção teste" and length(new_product.spec_list.specs) > 0
 
       assert condition
           

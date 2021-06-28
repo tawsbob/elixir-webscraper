@@ -24,12 +24,12 @@ defmodule Webscraper.Product do
     def new( product_map ) when is_map(product_map) do
 
         %__MODULE__{
-            og_image:   Helper.default_value_map(product_map, :og_image, ""),
-            brand:      Helper.default_value_map(product_map, :brand, ""),
-            brand_slug: Helper.default_value_map(product_map, :brand_slug, ""),
-            product_name: Helper.default_value_map(product_map, :product_name, ""),
-            product_slug: Helper.default_value_map(product_map, :product_slug, ""),
-            spec_list:    Helper.default_value_map(product_map, :spec_list, []),
+            og_image:   Helper.default_value_map(product_map, :og_image,  &is_binary/1, ""),
+            brand:      Helper.default_value_map(product_map, :brand,  &is_binary/1, ""),
+            brand_slug: Helper.default_value_map(product_map, :brand_slug,  &is_binary/1, ""),
+            product_name: Helper.default_value_map(product_map, :product_name,  &is_binary/1, ""),
+            product_slug: Helper.default_value_map(product_map, :product_slug,  &is_binary/1, ""),
+            spec_list:    Helper.default_value_map(product_map, :spec_list,  &is_list/1, []),
         }
 
     end
