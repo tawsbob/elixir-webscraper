@@ -1,6 +1,7 @@
 defmodule Webscraper.Queue do
     use GenServer
 
+    alias Webscraper.QueueState
     alias Webscraper.LinkQueue
     alias Webscraper.Helper
 
@@ -20,11 +21,11 @@ defmodule Webscraper.Queue do
 
         new_links = links
             |> Helper.plain_links_to_model
-            |> Helper.filter_duplicated_link( state )
+            |> Helper.filter_duplicated_link( state.queue )
         
-        new_state = state ++ new_links
+        new_queue = state.queue ++ new_links
 
-        {:reply, :ok, new_state}
+        {:reply, :ok, create_new_state(new_queue) }
     end
 
     
@@ -34,13 +35,13 @@ defmodule Webscraper.Queue do
         IO.puts "get one link from queue ... \n"
 
         link = Enum.find(
-            state,
+            state.queue,
             fn %LinkQueue{ status: status } ->
                 status == :pending
             end 
         ) 
 
-        {:reply, link, state}
+        {:reply, link, state }
     end
 
     @impl GenServer
@@ -53,10 +54,9 @@ defmodule Webscraper.Queue do
 
         IO.puts "Mark as done #{link} ... \n"
 
-        new_state = Enum.map(
-            state,
+        new_queue = Enum.map(
+            state.queue,
             fn  queue_link ->
-
                 if queue_link.url == link do
                     %LinkQueue{queue_link | status: :done }
                 else 
@@ -64,7 +64,7 @@ defmodule Webscraper.Queue do
                 end
             end
         )
-        {:reply, :ok, new_state}
+        {:reply, :ok, create_new_state(new_queue) }
     end
 
 
@@ -86,6 +86,13 @@ defmodule Webscraper.Queue do
         GenServer.call @process_name, {:get_random_link}
     end
     
+    def create_new_state(queue_list) when is_list(queue_list) do
+        QueueState.new(%{
+            queue: queue_list,
+            length: length(queue_list)
+        })
+    end
+
     # generic functions
 
 end
