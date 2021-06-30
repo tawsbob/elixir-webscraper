@@ -18,16 +18,13 @@ defmodule Webscraper.LinkQueue do
     new/1 create a new Link Queue Struck
 
     ## Parameters
-    - product_map: a map of key value
+    - link_queue_map: a map of key value
 
-    ## product_map keys
+    ## link_queue_map keys
+    - url: String,
+    - provider_name: String
+    - status: Atom => :pending | :done
 
-    - og_image: String
-    - brand: String
-    - brand_slug: String
-    - product_name: String
-    - product_slug: String
-    - spec_list: List [%Speclist{}]
     """
     @spec new( map() ) :: %__MODULE__{}
     def new( link_queue_map ) when is_map(link_queue_map) do

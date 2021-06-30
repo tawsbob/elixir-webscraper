@@ -72,7 +72,7 @@ defmodule Webscraper.Helper do
         )
     end
 
-    def filter_duplicated_link(list_links, list_links_to_check) do
+    def filter_duplicated_link(list_links, list_links_to_check) when is_list(list_links) and is_list(list_links_to_check) do
         Enum.filter(
             list_links,
             fn lnk ->
@@ -82,7 +82,7 @@ defmodule Webscraper.Helper do
         )
     end
 
-    def check_if_lnk_in_list?(check_url, list) do
+    def check_if_lnk_in_list?(check_url, list) when is_binary(check_url) and is_list(list) do
         Enum.any?(
             list,
             fn %LinkQueue{ url: url } ->

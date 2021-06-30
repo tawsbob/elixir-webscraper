@@ -11,8 +11,12 @@ defmodule Webscraper.Queue do
       {:ok, init_arg}
     end
 
+    #remember to use binary_to_term to save state on file
+
     @impl GenServer
-    def handle_call({:add_link, links}, _sender_pid, state) do
+    def handle_call({:add_link, links}, _sender_pid, state) when is_list(links) do
+
+        IO.puts "adding new links on queue... \n"
 
         new_links = links
             |> Helper.plain_links_to_model
@@ -26,6 +30,8 @@ defmodule Webscraper.Queue do
     
     @impl GenServer
     def handle_call({:get_random_link}, _sender_pid, state) do
+
+        IO.puts "get one link from queue ... \n"
 
         link = Enum.find(
             state,
@@ -42,6 +48,24 @@ defmodule Webscraper.Queue do
         {:reply, state, state}
     end
 
+    @impl GenServer
+    def handle_call({:remove_link, link}, _sender_pid, state) do
+
+        IO.puts "Mark as done #{link} ... \n"
+
+        new_state = Enum.map(
+            state,
+            fn  queue_link ->
+
+                if queue_link.url == link do
+                    %LinkQueue{queue_link | status: :done }
+                else 
+                    queue_link
+                end
+            end
+        )
+        {:reply, :ok, new_state}
+    end
 
 
     def start() do
