@@ -18,11 +18,14 @@ defmodule WebscraperProductTest do
         spec_list: []
       })
       
-      check_was_attrs = is_struct(new_product) and new_product.og_image == "http://www.cdn.com/" and new_product.brand == "brand" and new_product.product_name == "product_name"
-  
-      #IO.inspect new_product
-  
-      assert check_was_attrs
+      assert %Product{
+        brand: "brand",
+        brand_slug: "brand_slug",
+        og_image: "http://www.cdn.com/",
+        product_name: "product_name",
+        product_slug: "product_slug",
+        spec_list: []
+      } = new_product
           
   
     end
@@ -33,17 +36,27 @@ defmodule WebscraperProductTest do
       spec_list   =  Speclist.new(%{ title: "Seção teste", specs: [single_spec] })
   
       new_product = Product.new(%{
+        og_image: "http://www.cdn.com/",
         brand: "brand",
+        brand_slug: "brand_slug",
         product_name: "product_name",
+        product_slug: "product_slug",
         spec_list: spec_list
       })
-  
-      #IO.inspect new_product
-  
-      condition = is_struct(new_product) and new_product.brand == "brand" and new_product.spec_list.title == "Seção teste" and length(new_product.spec_list.specs) > 0
-
-      assert condition
-          
+      
+      
+      assert %Product{
+        brand: "brand",
+        brand_slug: "brand_slug",
+        og_image: "http://www.cdn.com/",
+        product_name: "product_name",
+        product_slug: "product_slug",
+        spec_list: %Speclist{
+          specs: [%Spec{content: "123", label: "teste"}],
+          title: "Seção teste"
+        }
+      } = new_product
+                
   
     end
   

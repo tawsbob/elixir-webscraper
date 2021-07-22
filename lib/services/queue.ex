@@ -7,9 +7,17 @@ defmodule Webscraper.Queue do
 
     @process_name :queue_process
 
+    
+
     @impl GenServer
     def init(init_arg) do
-      {:ok, init_arg}
+        {:ok, init_arg}
+    end
+
+    def start() do
+        {:ok, pid } = GenServer.start(__MODULE__, create_new_state([]), name: @process_name )
+        IO.puts "Starting Queue process with pid #{inspect pid} ... \n"
+        pid
     end
 
     #remember to use binary_to_term to save state on file
@@ -46,7 +54,7 @@ defmodule Webscraper.Queue do
 
     @impl GenServer
     def handle_call({:get_link_list}, _sender_pid, state) do
-        {:reply, state, state}
+        {:reply, state.queue, state}
     end
 
     @impl GenServer
@@ -67,14 +75,8 @@ defmodule Webscraper.Queue do
         {:reply, :ok, create_new_state(new_queue) }
     end
 
-
-    def start() do
-        {:ok, pid } = GenServer.start(__MODULE__, [], name: @process_name )
-        IO.puts "Starting Queue process with pid #{inspect pid} ... \n"
-    end
-
     # client functions
-    def add_link(lks) do
+    def add_link(lks) when is_list(lks) do
         GenServer.call @process_name, {:add_link, lks}
     end
 

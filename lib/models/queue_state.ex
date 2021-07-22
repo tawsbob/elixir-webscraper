@@ -1,8 +1,10 @@
 defmodule Webscraper.QueueState do
     
+    alias Webscraper.Model
     alias Webscraper.Helper
     alias Webscraper.LinkQueue
     
+    @behaviour Model
     @enforce_keys [ :queue, :length ]
 
     defstruct   queue: [],
@@ -24,6 +26,7 @@ defmodule Webscraper.QueueState do
     - length: Int
 
     """
+    @impl Model
     @spec new( map() ) :: %__MODULE__{}
     def new( queue_state_map ) when is_map(queue_state_map) do
         %__MODULE__{

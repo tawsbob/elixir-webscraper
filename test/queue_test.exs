@@ -9,10 +9,11 @@ defmodule WebscraperQueueTest do
     alias Webscraper.Queue
 
     test "create state" do
-
         result = Queue.create_new_state([])
         assert %QueueState{length: 0, queue: []} == result
     end
+
+    
 
     test "create state with one link" do
 
@@ -34,6 +35,31 @@ defmodule WebscraperQueueTest do
               }
             ]
           } == result           
+
+    end
+
+    test "get all links" do
+
+        state = Queue.create_new_state([
+            %LinkQueue{
+                provider_name: "google",
+                status: :pending,
+                url: "https://www.google.com.br/"
+            }, 
+        ])
+        
+        result = Queue.handle_call({:get_link_list}, nil, state)
+        
+        assert {:reply,
+             [
+               %Webscraper.LinkQueue{
+                 provider_name: "google",
+                 status: :pending,
+                 url: "https://www.google.com.br/"
+               }
+             ],
+            _
+        } = result           
 
     end
 
@@ -150,7 +176,12 @@ defmodule WebscraperQueueTest do
             %LinkQueue{
                 provider_name: "google",
                 status: :pending,
-                url: "https://www.google.com.br/"
+                url: "https://www.google.com.br/",
+              },
+              %LinkQueue{
+                provider_name: "google",
+                status: :pending,
+                url: "https://www.google.com.br/teste"
               }
           ]
     
@@ -160,9 +191,9 @@ defmodule WebscraperQueueTest do
             :reply, 
             :ok,
             %QueueState{
-                length: 1,
+                length: 2,
                 queue: [
-                    queue_link
+                    queue_link | _
                 ]
             }
         } = result  
@@ -196,4 +227,9 @@ defmodule WebscraperQueueTest do
     end
 
 
+    test "Start queue process" do
+        assert is_pid( Queue.start() )
+    end
+
+    
 end

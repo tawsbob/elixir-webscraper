@@ -1,7 +1,10 @@
 defmodule Webscraper.Product do
-
+    
+    
+    alias Webscraper.Model
     alias Webscraper.Helper
 
+    @behaviour Model
     @enforce_keys [ :brand, :product_name ]
 
     defstruct   og_image: "",
@@ -35,6 +38,8 @@ defmodule Webscraper.Product do
     - product_slug: String
     - spec_list: List [%Speclist{}]
     """
+    
+    @impl Model
     @spec new( map() ) :: %__MODULE__{}
     def new( product_map ) when is_map(product_map) do
 

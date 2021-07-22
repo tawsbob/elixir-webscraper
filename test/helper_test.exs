@@ -61,6 +61,40 @@ defmodule WebscraperHelperTest do
           ] = result 
 
     end
+
+    test "Test filter_duplicated_link with empty state" do
+        
+      # LIST OF LINK THATS FIST ITEM IS DUPLICATED IN STATE AND MOST BE REMOVED
+      list =  [
+          %LinkQueue{
+            provider_name: "google",
+            status: :pending,
+            url: "https://www.google.com.br/"
+          }
+        ]
+
+      state = [ ]
+      
+      
+
+      result = Helper.filter_duplicated_link(list, state)
+
+      assert [
+         %LinkQueue{
+            provider_name: "google",
+            status: :pending,
+            url: "https://www.google.com.br/"
+          }
+        ] = result 
+
+  end
+
+  test "Test filter_duplicated_link with empty state and list" do
+    list = []
+    state = [ ]
+    result = Helper.filter_duplicated_link(list, state)
+    assert [] = result
+  end 
     
 
     test "check_if_lnk_in_list" do

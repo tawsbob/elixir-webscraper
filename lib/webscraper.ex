@@ -12,15 +12,29 @@ defmodule Webscraper do
       :world
 
   """
-  def hello do
-    Webscraper.Product.new(%{
-      og_image: "http://www.cdn.com/",
-      brand: "brand",
-      brand_slug: "brand_slug",
-      product_name: "product_name",
-      product_slug: "product_slug", 
-    })
+
+  alias Webscraper.Queue
+  alias Webscraper.Helper
+
+  def start() do
+
+    ##iniciar o processo de fila
+    ##carregar o estado vindo do arquivo binário
+    ##escolher o provider para ser scrapado
+    ##fazer o http_request
+    ##extair os dados da página
+    ##fazer o download das imagens
+    ##salvar os dados no disco
+    ##Remover o produto da vida
+    ##Recomeçar o fluxo denovo
+
+
+    Queue.start()
+
+    #Queue.add_link( [{"url", "provider name"}] )
+    #Queue.get_link_list()
+
   end
 end
 
-IO.puts inspect Webscraper.hello()
+IO.puts inspect Webscraper.start()

@@ -1,8 +1,11 @@
 defmodule Webscraper.LinkQueue do
-    
-    alias Webscraper.Helper
 
+    alias Webscraper.Model
+    alias Webscraper.Helper
+    
+    @behaviour Model
     @enforce_keys [ :url, :provider_name ]
+    
 
     defstruct   url: "",
                 provider_name: "",
@@ -26,6 +29,7 @@ defmodule Webscraper.LinkQueue do
     - status: Atom => :pending | :done
 
     """
+    @impl Model
     @spec new( map() ) :: %__MODULE__{}
     def new( link_queue_map ) when is_map(link_queue_map) do
 

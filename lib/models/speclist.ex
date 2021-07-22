@@ -4,11 +4,12 @@ defmodule Webscraper.Speclist do
     A struct representing a product specification list.
     by Dellean santos
     """
-
-    @enforce_keys [ :title, :specs ]
-
     alias Webscraper.Helper
+    alias Webscraper.Model
 
+    @behaviour Model
+    @enforce_keys [ :title, :specs ]
+    
     defstruct   title: "",
                 specs: []
 
@@ -17,6 +18,7 @@ defmodule Webscraper.Speclist do
         specs: list(%Webscraper.Spec{})
     }
     
+    @impl Model
     @spec new( map() ) :: %__MODULE__{}
     def new( speclist_map ) when is_map(speclist_map) do
 

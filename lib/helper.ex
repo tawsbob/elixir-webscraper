@@ -3,6 +3,7 @@ defmodule Webscraper.Helper do
     alias Webscraper.LinkQueue
 
     @moduledoc """
+
     A helper module with some of generic functions to help on development
     By Dellean Santos
     """
@@ -27,7 +28,9 @@ defmodule Webscraper.Helper do
 
     @doc """
     
-    default_value_map/4 return a default value if map key isnt in map and with type valudation
+    # default_value_map/4 
+    
+    return a default value if map key isnt in map and with type valudation
     
     ## Parameters
         - map: a map to check the key value
@@ -49,20 +52,43 @@ defmodule Webscraper.Helper do
         end
     end
 
+    @doc """
+    
+    # default_value/3
+    
+    return a default value if map key isnt in map and with type valudation
+    
+    ## Parameters
+        - initial_value: initial value
+        - default_value: default value if initial value is not valid
+        - fn_check: a function that check type of key value
+    """
+
     @spec default_value( any(), any(), fun() ) :: any()
-    def default_value( default_value_param, value_else, fn_check ) do
+    def default_value( initial_value, default_value, fn_check ) do
         
-        variable_check_test = fn_check.(default_value_param)
+        variable_check_test = fn_check.(initial_value)
 
         if variable_check_test do 
-            default_value_param 
+            initial_value 
         else 
-            value_else
+            default_value
         end
     end
 
     #QUEUE HELPERS
 
+     @doc """
+    
+    # plain_links_to_model/1
+    
+    return a list of LinkQueue Struct with status pending
+    
+    ## Parameters
+        - lks: list of links as turple { url, provider_name }
+    """
+
+    @spec plain_links_to_model( list() ) :: list(%LinkQueue{})
     def plain_links_to_model(lks) when is_list(lks) do
         Enum.map(
             lks,
@@ -72,7 +98,19 @@ defmodule Webscraper.Helper do
         )
     end
 
+     @doc """
+    
+    # filter_duplicated_link/2
+    
+    return a list of LinkQueue Struct of new items in list_links_to_check
+    
+    ## Parameters
+        - list_links: list of links as LinkQueue Struct
+        - list_links_to_check: list of links as LinkQueue Struct
+    """
+
     def filter_duplicated_link(list_links, list_links_to_check) when is_list(list_links) and is_list(list_links_to_check) do
+        
         Enum.filter(
             list_links,
             fn lnk ->
@@ -82,13 +120,33 @@ defmodule Webscraper.Helper do
         )
     end
 
-    def check_if_lnk_in_list?(check_url, list) when is_binary(check_url) and is_list(list) do
+    def check_if_lnk_in_list?(check_url, check_list) when is_binary(check_url) and is_list(check_list) do
+        
         Enum.any?(
-            list,
+            check_list,
             fn %LinkQueue{ url: url } ->
                 check_url === url
             end
         )
+    end
+    
+
+    def http_request( url ) do
+        case Tesla.get(url) do
+            {:ok, response} -> 
+
+                IO.puts "Loading data from #{url} done()"
+                
+                if response.status == 200 do
+                    response.body
+                else 
+                    IO.puts "Something goes wrong when trying to fetch data \n"
+                    IO.inspect response
+                    nil
+                end
+
+            _ -> nil
+        end
     end
 
 end
