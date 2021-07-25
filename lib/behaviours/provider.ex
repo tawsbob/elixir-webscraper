@@ -5,5 +5,6 @@ defmodule Webscraper.Provider do
     """
     @callback get_data( binary() ) :: struct()
     @callback get_image( binary() ) :: struct()
+    @callback provider_name() :: binary()
 
   end

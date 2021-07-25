@@ -226,6 +226,113 @@ defmodule WebscraperQueueTest do
           
     end
 
+    test "convert turple on link queue model plain_links_to_model" do
+    
+        url = "https://www.google.com.br/"
+        provider = "google"
+    
+         result = Queue.plain_links_to_model([{ url, provider }])
+    
+         assert [
+            %LinkQueue{
+              provider_name: "google",
+              status: :pending,
+              url: "https://www.google.com.br/"
+            }
+          ] = result 
+      
+        end
+    
+        test "Test filter_duplicated_link" do
+            
+            # LIST OF LINK THATS FIST ITEM IS DUPLICATED IN STATE AND MOST BE REMOVED
+            list =  [
+                %LinkQueue{
+                  provider_name: "google",
+                  status: :pending,
+                  url: "https://www.google.com.br/"
+                },
+                %LinkQueue{
+                    provider_name: "google",
+                    status: :pending,
+                    url: "https://www.google.com.br/1"
+                  }
+              ]
+    
+            state = [
+                %LinkQueue{
+                    provider_name: "google",
+                    status: :pending,
+                    url: "https://www.google.com.br/"
+                  }
+              ]
+            
+            
+    
+            result = Queue.filter_duplicated_link(list, state)
+    
+            assert [
+                %LinkQueue{
+                  provider_name: "google",
+                  status: :pending,
+                  url: "https://www.google.com.br/1"
+                }
+              ] = result 
+    
+        end
+    
+        test "Test filter_duplicated_link with empty state" do
+            
+          # LIST OF LINK THATS FIST ITEM IS DUPLICATED IN STATE AND MOST BE REMOVED
+          list =  [
+              %LinkQueue{
+                provider_name: "google",
+                status: :pending,
+                url: "https://www.google.com.br/"
+              }
+            ]
+    
+          state = [ ]
+          
+          
+    
+          result = Queue.filter_duplicated_link(list, state)
+    
+          assert [
+             %LinkQueue{
+                provider_name: "google",
+                status: :pending,
+                url: "https://www.google.com.br/"
+              }
+            ] = result 
+    
+      end
+    
+      test "Test filter_duplicated_link with empty state and list" do
+        list = []
+        state = [ ]
+        result = Queue.filter_duplicated_link(list, state)
+        assert [] = result
+      end 
+        
+    
+        test "check_if_lnk_in_list" do
+    
+            list = [
+                %LinkQueue{
+                  provider_name: "google",
+                  status: :pending,
+                  url: "https://www.google.com.br/1"
+                }
+              ] 
+    
+            link = "https://www.google.com.br/1"
+    
+            result = Queue.check_if_lnk_in_list?(link, list)
+    
+            assert result
+    
+        end
 
     test "Start queue process" do
         assert is_pid( Queue.start() )

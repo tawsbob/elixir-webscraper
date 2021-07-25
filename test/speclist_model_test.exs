@@ -9,11 +9,11 @@ defmodule WebscraperSpecListTest do
     test "create a spec section" do
     
       single_spec = Spec.new(%{ label: "teste", content: "123" })
-      spec_list   =  Speclist.new(%{ title: "Seção teste", specs: [single_spec] })
+      specifications_section   =  Speclist.new(%{ title: "Seção teste", specs: [single_spec] })
       
-      #IO.inspect spec_list
+      #IO.inspect specifications_section
 
-      condition = is_struct(spec_list) and spec_list.title == "Seção teste"  and Enum.at(spec_list.specs, 0).label == "teste"
+      condition = is_struct(specifications_section) and specifications_section.title == "Seção teste"  and Enum.at(specifications_section.specs, 0).label == "teste"
   
       assert condition
   
@@ -21,10 +21,10 @@ defmodule WebscraperSpecListTest do
   
     test "create a spec section without specs list" do
       
-      spec_list =  Speclist.new(%{ title: "Seção teste", specs: [] })
-      condition = is_struct(spec_list) and spec_list.title == "Seção teste"  and  length( spec_list.specs ) == 0
+      specifications_section =  Speclist.new(%{ title: "Seção teste", specs: [] })
+      condition = is_struct(specifications_section) and specifications_section.title == "Seção teste"  and  length( specifications_section.specs ) == 0
   
-      #IO.inspect spec_list
+      #IO.inspect specifications_section
   
       assert condition
   
@@ -32,10 +32,10 @@ defmodule WebscraperSpecListTest do
 
     test "create a spec section passing passing specs as wrong type" do
       
-      spec_list =  Speclist.new(%{ title: "Seção teste", specs: "[]" })
-      condition = is_struct(spec_list) and spec_list.title == "Seção teste"  and  is_list( spec_list.specs )
+      specifications_section =  Speclist.new(%{ title: "Seção teste", specs: "[]" })
+      condition = is_struct(specifications_section) and specifications_section.title == "Seção teste"  and  is_list( specifications_section.specs )
   
-      #IO.inspect spec_list
+      #IO.inspect specifications_section
   
       assert condition
   

@@ -7,8 +7,6 @@ defmodule Webscraper.Queue do
 
     @process_name :queue_process
 
-    
-
     @impl GenServer
     def init(init_arg) do
         {:ok, init_arg}
@@ -28,8 +26,8 @@ defmodule Webscraper.Queue do
         IO.puts "adding new links on queue... \n"
 
         new_links = links
-            |> Helper.plain_links_to_model
-            |> Helper.filter_duplicated_link( state.queue )
+            |> plain_links_to_model
+            |> filter_duplicated_link( state.queue )
         
         new_queue = state.queue ++ new_links
 
@@ -73,6 +71,61 @@ defmodule Webscraper.Queue do
             end
         )
         {:reply, :ok, create_new_state(new_queue) }
+    end
+
+    #generic function
+   #QUEUE HELPERS
+
+     @doc """
+    
+    # plain_links_to_model/1
+    
+    return a list of LinkQueue Struct with status pending
+    
+    ## Parameters
+        - lks: list of links as turple { url, provider_name }
+    """
+
+    @spec plain_links_to_model( list() ) :: list(%LinkQueue{})
+    def plain_links_to_model(lks) when is_list(lks) do
+        Enum.map(
+            lks,
+            fn { url, provider_name } -> 
+                LinkQueue.new(%{ url: url, provider_name: provider_name }) 
+            end
+        )
+    end
+
+     @doc """
+    
+    # filter_duplicated_link/2
+    
+    return a list of LinkQueue Struct of new items in list_links_to_check
+    
+    ## Parameters
+        - list_links: list of links as LinkQueue Struct
+        - list_links_to_check: list of links as LinkQueue Struct
+    """
+    #Think way to rever that quadratic function into a linerar
+    def filter_duplicated_link(list_links, list_links_to_check) when is_list(list_links) and is_list(list_links_to_check) do
+        
+        Enum.filter(
+            list_links,
+            fn lnk ->
+                %LinkQueue{ url: url } = lnk
+                !check_if_lnk_in_list?( url,  list_links_to_check)
+            end
+        )
+    end
+
+    def check_if_lnk_in_list?(check_url, check_list) when is_binary(check_url) and is_list(check_list) do
+        
+        Enum.any?(
+            check_list,
+            fn %LinkQueue{ url: url } ->
+                check_url === url
+            end
+        )
     end
 
     # client functions

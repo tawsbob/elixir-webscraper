@@ -6,6 +6,10 @@ defmodule Webscraper.Dom do
             _ -> nil
         end
     end
+    
+    def text( dom_element  ) do
+        Floki.text(dom_element )
+    end
 
     def find( document, tag_selector ) do
         Floki.find(document, tag_selector)
@@ -17,6 +21,12 @@ defmodule Webscraper.Dom do
 
     def get_node_text( node ) do
         Floki.text( node )
+    end
+
+    def get_attr(document, selector, attr) do
+        [ attr_content ] = Floki.find(document, selector)
+        |> Floki.attribute(attr)
+        attr_content
     end
 
 end
