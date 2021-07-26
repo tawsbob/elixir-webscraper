@@ -96,8 +96,8 @@ defmodule Webscraper.Helper do
     end
 
     def slugfy(str, lowercase \\ true ) when is_binary(str) do
-        IO.inspect str
         Slug.slugify(str,lowercase: lowercase)
     end
+    
 
 end

@@ -17,13 +17,14 @@ defmodule Webscraper do
   alias Webscraper.Queue
   alias Webscraper.Helper
   alias Webscraper.LinkQueue
+  alias Webscraper.Hasura
 
   def start() do
 
     ##iniciar o processo de fila
     Queue.start()
-
     Queue.add_link([{ "https://canaltech.com.br/produto/apple/ipad-pro-129-2021/", "canaltech"  }])
+
 
     ## Pega um link na lista
     %LinkQueue{ provider_name: provider_name, url: url } = Queue.get_random_link()
@@ -34,12 +35,16 @@ defmodule Webscraper do
     url
     |>Helper.http_request
     |>provider.get_data
-    
+    |>save_hasura
+    ##salvar os dados no hasura
+    ##Remover o produto da fila
+
     ##fazer o download das imagens
     #|> provider.get_image
-    ##salvar os dados no hasura
+    
+    
 
-    ##Remover o produto da fila
+    
     
 
     ##Recomeçar o fluxo denovo
@@ -62,5 +67,10 @@ defmodule Webscraper do
     )
   end
 
+  def save_hasura({ product, link }) do
+    Hasura.save_product(product)
+  end
+
 end
+
 IO.inspect Webscraper.start()

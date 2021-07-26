@@ -26,6 +26,8 @@ defmodule Webscraper.Canaltech do
         product_slug = Helper.slugfy(brand_slug <> "-" <> product_name)
         specifications_section = get_specs( dom_model )
 
+        link = get_all_link( dom_model )
+
         result = %{ 
             image: image,
             brand: brand,
@@ -34,16 +36,9 @@ defmodule Webscraper.Canaltech do
             product_slug: product_slug,
             specifications_section: specifications_section
         }
-
-        Product.new(result)
+        {Product.new(result),  link}
     end
     
-    @impl Provider
-    def get_image( %Product{ image: image } ) do
-        IO.puts image
-        image
-    end
-
     #module functions
     def get_brand(dom_model) do
         [{_, _, [brand | _]}] = Dom.find(dom_model, "h1.device-name a")
@@ -91,6 +86,29 @@ defmodule Webscraper.Canaltech do
               Spec.new(%{ label: label, content: content  })
             end
           )
+      end
+
+      def get_all_link( dom_model ) do
+        
+        links_model = Dom.find( dom_model, "a")
+        
+        plain_links = Enum.map(
+          links_model,
+          fn element -> 
+            case Dom.get_attr(element, "href") do
+              [ link ] -> Regex.replace(~r/\?.+/, link, "")
+              _ -> nil
+            end
+          end
+         )
+
+        #if link is valid and is a product link
+        plain_valid_link = Enum.filter(
+          plain_links,
+          fn lnk -> is_binary(lnk) and String.contains? lnk, "/produto/" end
+        )
+
+        plain_valid_link
       end
 
 end
