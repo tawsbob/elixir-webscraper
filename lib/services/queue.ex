@@ -140,6 +140,10 @@ defmodule Webscraper.Queue do
     def get_random_link() do
         GenServer.call @process_name, {:get_random_link}
     end
+
+    def remove_link(link) do
+        GenServer.call @process_name, {:remove_link, link}
+    end
     
     def create_new_state(queue_list) when is_list(queue_list) do
         QueueState.new(%{

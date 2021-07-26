@@ -8,10 +8,11 @@ defmodule Webscraper.Canaltech do
     alias Webscraper.Spec
 
     @behaviour Provider
+    @provider_name "canaltech"
 
     @impl Provider
     def provider_name() do
-        "canaltech"
+      @provider_name
     end
 
     @impl Provider
@@ -96,7 +97,8 @@ defmodule Webscraper.Canaltech do
           links_model,
           fn element -> 
             case Dom.get_attr(element, "href") do
-              [ link ] -> Regex.replace(~r/\?.+/, link, "")
+              [ link ] ->  
+                {Regex.replace(~r/\?.+/, link, ""),  @provider_name}
               _ -> nil
             end
           end
@@ -105,7 +107,12 @@ defmodule Webscraper.Canaltech do
         #if link is valid and is a product link
         plain_valid_link = Enum.filter(
           plain_links,
-          fn lnk -> is_binary(lnk) and String.contains? lnk, "/produto/" end
+          fn tp ->  
+             case tp do
+              {lnk, provider_name} -> is_binary(lnk) and String.contains? lnk, "/produto/"
+              _ -> false
+             end
+          end
         )
 
         plain_valid_link

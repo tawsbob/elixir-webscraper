@@ -3,8 +3,8 @@ defmodule WebscraperHelperTest do
   
     doctest Webscraper.Helper
     
-    alias Webscraper.Helper
-    alias Webscraper.LinkQueue
+    #alias Webscraper.Helper
+    #alias Webscraper.LinkQueue
     
     #QUEUE TESTS 
     test "empty test" do

@@ -24,36 +24,29 @@ defmodule Webscraper do
     ##iniciar o processo de fila
     Queue.start()
     Queue.add_link([{ "https://canaltech.com.br/produto/apple/ipad-pro-129-2021/", "canaltech"  }])
+    scrape_flow()
 
+  end
 
-    ## Pega um link na lista
-    %LinkQueue{ provider_name: provider_name, url: url } = Queue.get_random_link()
+  ## Pega um link na lista
+  def scrape_flow() do
 
-    ##escolher o provider para ser scrapado
-    provider = get_provider( provider_name )
+    case Queue.get_random_link() do
+
+      %LinkQueue{ provider_name: provider_name, url: url } ->
+
+        provider = get_provider( provider_name )
     
-    url
-    |>Helper.http_request
-    |>provider.get_data
-    |>save_hasura
-    ##salvar os dados no hasura
-    ##Remover o produto da fila
+        url
+        |>Helper.http_request
+        |>provider.get_data
+        |>pre_save
+        |>save_hasura(url)
 
-    ##fazer o download das imagens
-    #|> provider.get_image
-    
-    
+      _ -> 
+          IO.puts "All links are scraped bitch!"
 
-    
-    
-
-    ##Recomeçar o fluxo denovo
-
-
-    
-
-    #Queue.add_link( [{"url", "provider name"}] )
-    #Queue.get_link_list()
+    end
 
   end
 
@@ -67,10 +60,38 @@ defmodule Webscraper do
     )
   end
 
-  def save_hasura({ product, link }) do
-    Hasura.save_product(product)
+  def pre_save({product, links}) do
+    
+    Queue.add_link(links)
+
+    #check on graphql if that product already exist in database
+    case Hasura.looking_for_product(product) do
+      {:ok, _} -> 
+        IO.puts "Product already in database"
+        ## recomeça o flow
+        scrape_flow()
+      _ -> nil
+      ##salva o produto no db
+      product
+    end
+
+  end
+
+  ##remember to download the images and upload to s3 
+  def save_hasura(product, scraped_link) when is_binary(scraped_link) do
+    
+    case Hasura.save_product(product) do
+
+      {:ok, id } -> 
+      IO.puts "New product #{product.product_name} on hasura databse with #{id}"
+      Queue.remove_link(scraped_link)
+      scrape_flow()
+      
+      nil -> IO.puts "Something goes wrong when trying to save #{product.product_name} on hasura"
+    end
+
   end
 
 end
 
-IO.inspect Webscraper.start()
+Webscraper.start()
