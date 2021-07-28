@@ -31,17 +31,21 @@ defmodule Webscraper do
   ## Pega um link na lista
   def scrape_flow() do
 
+    IO.puts "Starting new scrape flow"
+
     case Queue.get_random_link() do
 
       %LinkQueue{ provider_name: provider_name, url: url } ->
 
         provider = get_provider( provider_name )
-    
+
+        IO.puts "Got #{url} from queue"
+        IO.inspect url
+
         url
         |>Helper.http_request
         |>provider.get_data
-        |>pre_save
-        |>save_hasura(url)
+        |>pre_save(url)
 
       _ -> 
           IO.puts "All links are scraped bitch!"
@@ -60,7 +64,7 @@ defmodule Webscraper do
     )
   end
 
-  def pre_save({product, links}) do
+  def pre_save({product, links}, scraped_link) do
     
     Queue.add_link(links)
 
@@ -68,11 +72,13 @@ defmodule Webscraper do
     case Hasura.looking_for_product(product) do
       {:ok, _} -> 
         IO.puts "Product already in database"
+        Queue.remove_link(scraped_link)
         ## recomeça o flow
         scrape_flow()
+
       _ -> nil
       ##salva o produto no db
-      product
+      save_hasura(product, scraped_link)
     end
 
   end

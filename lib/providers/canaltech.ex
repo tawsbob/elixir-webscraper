@@ -9,7 +9,8 @@ defmodule Webscraper.Canaltech do
 
     @behaviour Provider
     @provider_name "canaltech"
-
+    @url_base_path "https://canaltech.com.br"
+    
     @impl Provider
     def provider_name() do
       @provider_name
@@ -97,8 +98,10 @@ defmodule Webscraper.Canaltech do
           links_model,
           fn element -> 
             case Dom.get_attr(element, "href") do
-              [ link ] ->  
-                {Regex.replace(~r/\?.+/, link, ""),  @provider_name}
+              [ link ] ->
+                full_url = @url_base_path <> Regex.replace(~r/\?.+/, link, "")
+                #prevent to send to queue just '/produto/' url
+                { full_url,  @provider_name}
               _ -> nil
             end
           end
