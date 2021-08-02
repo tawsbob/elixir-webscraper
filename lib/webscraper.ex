@@ -22,8 +22,13 @@ defmodule Webscraper do
   def start() do
 
     ##iniciar o processo de fila
+    link = "https://canaltech.com.br/produto/"
+    |> Helper.http_request
+    |> Webscraper.Canaltech.load_initial_links
+    
     Queue.start()
-    Queue.add_link([{ "https://canaltech.com.br/produto/apple/ipad-pro-129-2021/", "canaltech"  }])
+    Queue.add_link(link)
+
     scrape_flow()
 
   end
@@ -99,5 +104,3 @@ defmodule Webscraper do
   end
 
 end
-
-Webscraper.start()

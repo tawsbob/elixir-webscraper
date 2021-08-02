@@ -21,7 +21,7 @@ defmodule Webscraper.Canaltech do
         
         dom_model = Dom.str_html_to_dom_model( html_string )
 
-        {image, ext} = get_image(dom_model)
+        {scrape_image, ext} = get_image(dom_model)
         brand = get_brand(dom_model)
         brand_slug = Helper.slugfy(brand)
         product_name = get_product_name(dom_model)
@@ -31,7 +31,7 @@ defmodule Webscraper.Canaltech do
         link = get_all_link( dom_model )
 
         result = %{ 
-            image: image,
+            scrape_image: scrape_image,
             brand: brand,
             brand_slug: brand_slug,
             product_name: product_name, 
@@ -99,9 +99,13 @@ defmodule Webscraper.Canaltech do
           fn element -> 
             case Dom.get_attr(element, "href") do
               [ link ] ->
-                full_url = @url_base_path <> Regex.replace(~r/\?.+/, link, "")
-                #prevent to send to queue just '/produto/' url
-                { full_url,  @provider_name}
+                if link == "/produto/" or String.contains?(link, "oferta") do
+                  nil
+                else 
+                  full_url = @url_base_path <> Regex.replace(~r/\?.+/, link, "")
+                  #prevent to send to queue just '/produto/' url
+                  { full_url,  @provider_name}
+                end   
               _ -> nil
             end
           end
@@ -112,13 +116,20 @@ defmodule Webscraper.Canaltech do
           plain_links,
           fn tp ->  
              case tp do
-              {lnk, provider_name} -> is_binary(lnk) and String.contains? lnk, "/produto/"
+              {lnk, provider_name} -> 
+                is_binary(lnk) and String.contains?(lnk, "/produto/")
               _ -> false
              end
           end
         )
 
         plain_valid_link
+      end
+      
+      def load_initial_links( html_string ) do
+        html_string
+        |> Dom.str_html_to_dom_model
+        |> get_all_link
       end
 
 end

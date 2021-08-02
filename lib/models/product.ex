@@ -5,9 +5,10 @@ defmodule Webscraper.Product do
     alias Webscraper.Helper
 
     @behaviour Model
-    @enforce_keys [ :brand, :product_name ]
+    @enforce_keys [ :brand, :product_name, :product_slug ]
 
     defstruct   image: "",
+                scrape_image: "",
                 brand: "",
                 brand_slug: "",
                 product_name: "",
@@ -16,6 +17,7 @@ defmodule Webscraper.Product do
 
     @type t :: %__MODULE__{
         image: String.t(),
+        scrape_image: String.t(),
         brand: String.t(),
         brand_slug: String.t(),  
         product_name: String.t(),  
@@ -32,6 +34,7 @@ defmodule Webscraper.Product do
     ## product_map keys
 
     - image: String
+    - scrape_image: String
     - brand: String
     - brand_slug: String
     - product_name: String
@@ -45,6 +48,7 @@ defmodule Webscraper.Product do
 
         %__MODULE__{
             image:   Helper.default_value_map(product_map, :image,  &is_binary/1, ""),
+            scrape_image:   Helper.default_value_map(product_map, :scrape_image,  &is_binary/1, ""),
             brand:      Helper.default_value_map(product_map, :brand,  &is_binary/1, ""),
             brand_slug: Helper.default_value_map(product_map, :brand_slug,  &is_binary/1, ""),
             product_name: Helper.default_value_map(product_map, :product_name,  &is_binary/1, ""),

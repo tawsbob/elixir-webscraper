@@ -3,10 +3,10 @@ defmodule Webscraper.Hasura do
     alias Webscraper.Product
     alias Webscraper.Graphql
 
-    @graphql_endpoint "https://products-especifications.hasura.app/v1/graphql"
+    @graphql_endpoint "http://localhost:8000/v1/graphql"
     @http_headers [
             {"content-type", "application/json"},
-            {"x-hasura-admin-secret", "64aDuwbL2X3gEbVNh7JqbpDiS2CJ1SvX5DP6y2eLAe5EIouNk7FfGkh0pWa1CLf0"}
+            {"x-hasura-admin-secret", "myadminsecretkey"}
         ]
         
 
@@ -15,7 +15,7 @@ defmodule Webscraper.Hasura do
             query checkForProductElixir(
                 $product_slug: String!
             ){
-                product(
+                products(
                     where: {
                         product_slug: { _eq: $product_slug }
                     }
@@ -32,7 +32,7 @@ defmodule Webscraper.Hasura do
        payload  = %{ product_slug: product_slug }
         
         case  Graphql.send({ query,  payload }, @graphql_endpoint, @http_headers) do
-            {:ok, %{"data" => %{"product" => %{"id" => id } }}} -> 
+            {:ok, %{"data" => %{"products" => [%{"id" => id }] }}} -> 
                 {:ok, id}
             err -> 
                 IO.puts "error on post request looking_for_product"
@@ -47,16 +47,18 @@ defmodule Webscraper.Hasura do
         mutation createProductElixir(
             $brand: String!
             $brand_slug: String!
-            $image: String!
+            $image: String
+            $scrape_image: String!
             $product_name: String!
             $product_slug: String!
             $specifications_section: json!
         ){
-        insert_product_one(
+        insert_products_one(
                 object:{
                     brand: $brand,
                     brand_slug: $brand_slug,
                     image: $image,
+                    scrape_image: $scrape_image,
                     product_name: $product_name,
                     product_slug: $product_slug,
                     specifications_section: $specifications_section
@@ -77,7 +79,7 @@ defmodule Webscraper.Hasura do
         
         #remember to switch to an abstraction to better software architecture
         case Graphql.send({ query,  product }, @graphql_endpoint, @http_headers) do
-            {:ok, %{"data" => %{"insert_product_one" => %{"id" => id } }}} -> 
+            {:ok, %{"data" => %{"insert_products_one" => %{"id" => id } }}} -> 
                 IO.puts "Product created with id #{id}"
                 {:ok, id}
                 err -> 

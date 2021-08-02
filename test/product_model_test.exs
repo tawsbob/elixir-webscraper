@@ -10,7 +10,7 @@ defmodule WebscraperProductTest do
     test "create a new product with a empty spec list" do
   
       new_product = Product.new(%{
-        image: "http://www.cdn.com/",
+        scrape_image: "http://www.cdn.com/",
         brand: "brand",
         brand_slug: "brand_slug",
         product_name: "product_name",
@@ -21,7 +21,8 @@ defmodule WebscraperProductTest do
       assert %Product{
         brand: "brand",
         brand_slug: "brand_slug",
-        image: "http://www.cdn.com/",
+        scrape_image: "http://www.cdn.com/",
+        image: "",
         product_name: "product_name",
         product_slug: "product_slug",
         specifications_section: []
@@ -36,7 +37,7 @@ defmodule WebscraperProductTest do
       specifications_section   =  Speclist.new(%{ title: "Seção teste", specs: [single_spec] })
   
       new_product = Product.new(%{
-        image: "http://www.cdn.com/",
+        scrape_image: "http://www.cdn.com/",
         brand: "brand",
         brand_slug: "brand_slug",
         product_name: "product_name",
@@ -48,7 +49,8 @@ defmodule WebscraperProductTest do
       assert %Product{
         brand: "brand",
         brand_slug: "brand_slug",
-        image: "http://www.cdn.com/",
+        scrape_image: "http://www.cdn.com/",
+        image: "",
         product_name: "product_name",
         product_slug: "product_slug",
         specifications_section: %Speclist{

@@ -5,5 +5,6 @@ defmodule Webscraper.Provider do
     """
     @callback get_data( binary() ) :: tuple()
     @callback provider_name() :: binary()
+    @callback load_initial_links() :: list()
 
   end
