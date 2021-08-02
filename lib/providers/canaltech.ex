@@ -6,6 +6,7 @@ defmodule Webscraper.Canaltech do
     alias Webscraper.Dom
     alias Webscraper.Speclist
     alias Webscraper.Spec
+    alias Webscraper.Youtube
 
     @behaviour Provider
     @provider_name "canaltech"
@@ -28,7 +29,8 @@ defmodule Webscraper.Canaltech do
         product_slug = Helper.slugfy(brand_slug <> "-" <> product_name)
         specifications_section = get_specs( dom_model )
 
-        link = get_all_link( dom_model )
+        videos = Youtube.get_videos("review #{brand} #{product_name}")
+        links = get_all_link( dom_model )
 
         result = %{ 
             scrape_image: scrape_image,
@@ -38,7 +40,8 @@ defmodule Webscraper.Canaltech do
             product_slug: product_slug,
             specifications_section: specifications_section
         }
-        {Product.new(result),  link}
+        
+        {{Product.new(result), videos },  links}
     end
     
     #module functions

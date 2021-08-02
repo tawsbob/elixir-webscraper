@@ -69,7 +69,7 @@ defmodule Webscraper do
     )
   end
 
-  def pre_save({product, links}, scraped_link) do
+  def pre_save({{product, videos}, links}, scraped_link) do
     
     Queue.add_link(links)
 
@@ -83,19 +83,31 @@ defmodule Webscraper do
 
       _ -> nil
       ##salva o produto no db
-      save_hasura(product, scraped_link)
+      save_hasura({product, videos}, scraped_link)
     end
 
   end
 
   ##remember to download the images and upload to s3 
-  def save_hasura(product, scraped_link) when is_binary(scraped_link) do
+  def save_hasura({product, videos}, scraped_link) when is_binary(scraped_link) do
     
+    
+
     case Hasura.save_product(product) do
 
       {:ok, id } -> 
       IO.puts "New product #{product.product_name} on hasura databse with #{id}"
       Queue.remove_link(scraped_link)
+
+      videos_with_id = Enum.map(
+        videos,
+        fn video ->
+          %{video | product_id: id }
+        end
+      )
+
+      Hasura.save_videos(videos_with_id)
+
       scrape_flow()
       
       nil -> IO.puts "Something goes wrong when trying to save #{product.product_name} on hasura"

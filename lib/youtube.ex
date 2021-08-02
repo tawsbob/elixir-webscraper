@@ -29,7 +29,6 @@ defmodule Webscraper.Youtube do
 
                 [ el ,_] = json_decoded["contents"]["twoColumnSearchResultsRenderer"]["primaryContents"]["sectionListRenderer"]["contents"]
                 
-
                 videos = Enum.map(
                     el["itemSectionRenderer"]["contents"],
                     fn video_json ->
@@ -37,21 +36,15 @@ defmodule Webscraper.Youtube do
                             video_id                =  video_json["videoRenderer"]["videoId"]
                             [%{ "text" => title}]   = video_json["videoRenderer"]["title"]["runs"]
                             [%{"text" => owner }]  = video_json["videoRenderer"]["ownerText"]["runs"]
-                            %{video_id: video_id, title: title, owner: owner }  
+                            %{video_id: video_id, title: title, owner: owner, provider: "youtube", product_id: "" }  
                         else
                           nil
                         end
                     end
                 )
-            
-                videos
+                Enum.filter(videos, fn v -> v != nil end)
             _ -> nil
         end
-        
-         #save()
-
-       
-
     end
 
     def save( data ) do
@@ -65,5 +58,3 @@ defmodule Webscraper.Youtube do
     end  
 
 end
-
-IO.inspect Webscraper.Youtube.get_videos("review xiaomi")

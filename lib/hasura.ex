@@ -90,4 +90,28 @@ defmodule Webscraper.Hasura do
 
     end
 
+    def save_videos(videos) do
+        query = """
+            mutation addVideosToProduct( $videos: [videos_insert_input!]!){
+                insert_videos(
+                    objects: $videos
+                ){
+                    returning {
+                      id
+                    }
+                }
+            }
+        """
+        case Graphql.send({ query,  %{ videos: videos } }, @graphql_endpoint, @http_headers) do
+            {:ok, %{"data" => %{"insert_videos" => _ }}} -> 
+                IO.puts "Videos saveds"
+                :ok
+                err -> 
+                    IO.puts "error on post request save_videos"
+                    IO.inspect err
+                    err
+        end
+
+    end
+
 end
