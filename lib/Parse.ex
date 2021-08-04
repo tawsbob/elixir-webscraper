@@ -19,7 +19,7 @@ defmodule Webscraper.ParsePlataform do
         IO.puts "Creating #{product.product_slug}"
         case Tesla.post(url, payload, headers: @http_headers) do
             {:ok, response} ->
-                IO.inspect response 
+                #IO.inspect response 
                 case response.status do
                     200 -> JSON.decode(response.body)
                     _ -> nil
