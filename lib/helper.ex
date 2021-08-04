@@ -99,5 +99,8 @@ defmodule Webscraper.Helper do
         Slug.slugify(str,lowercase: lowercase)
     end
     
+    def clean_elixir_struct_attr(str_json) do
+        Regex.replace(~r/\"__struct__\"\:\"(?<=\"\_\_struct\_\_\"\:\")(.+?)(?=\"\,)+\"+\,/, str_json, "")
+    end
 
 end

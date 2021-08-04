@@ -1,5 +1,6 @@
 defmodule Webscraper.Graphql do
 
+    alias Webscraper.Helper
     
     def send({query, %{} = variables}, url, headers \\ []) when is_binary(query) and is_binary(url)  do
     
@@ -7,7 +8,7 @@ defmodule Webscraper.Graphql do
         
         gql_call(%{ 
             url: url, 
-            payload: clean_elixir_struct_attr(decoded_json), 
+            payload: Helper.clean_elixir_struct_attr(decoded_json), 
             headers: headers 
         })
     end
@@ -28,8 +29,6 @@ defmodule Webscraper.Graphql do
         end
     end
 
-    def clean_elixir_struct_attr(str_json) do
-        Regex.replace(~r/\"__struct__\"\:\"(?<=\"\_\_struct\_\_\"\:\")(.+?)(?=\"\,)+\"+\,/, str_json, "")
-    end
+   
 
 end

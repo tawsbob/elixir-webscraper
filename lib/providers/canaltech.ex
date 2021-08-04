@@ -38,10 +38,11 @@ defmodule Webscraper.Canaltech do
             brand_slug: brand_slug,
             product_name: product_name, 
             product_slug: product_slug,
-            specifications_section: specifications_section
+            specifications_section: specifications_section,
+            videos: videos
         }
         
-        {{Product.new(result), videos },  links}
+        {Product.new(result), links}
     end
     
     #module functions

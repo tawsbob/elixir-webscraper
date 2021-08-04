@@ -7,22 +7,24 @@ defmodule Webscraper.Product do
     @behaviour Model
     @enforce_keys [ :brand, :product_name, :product_slug ]
 
-    defstruct   image: "",
+    defstruct   image: %{},
                 scrape_image: "",
                 brand: "",
                 brand_slug: "",
                 product_name: "",
                 product_slug: "",
-                specifications_section: []
+                specifications_section: [],
+                videos: []
 
     @type t :: %__MODULE__{
-        image: String.t(),
+        image: struct(),
         scrape_image: String.t(),
         brand: String.t(),
         brand_slug: String.t(),  
         product_name: String.t(),  
         product_slug: String.t(),
-        specifications_section: list(%Webscraper.Speclist{})
+        specifications_section: list(%Webscraper.Speclist{}),
+        videos: list()
     }
     
     @doc """
@@ -47,13 +49,14 @@ defmodule Webscraper.Product do
     def new( product_map ) when is_map(product_map) do
 
         %__MODULE__{
-            image:   Helper.default_value_map(product_map, :image,  &is_binary/1, ""),
+            image:   Helper.default_value_map(product_map, :image,  &is_struct/1, %{}),
             scrape_image:   Helper.default_value_map(product_map, :scrape_image,  &is_binary/1, ""),
             brand:      Helper.default_value_map(product_map, :brand,  &is_binary/1, ""),
             brand_slug: Helper.default_value_map(product_map, :brand_slug,  &is_binary/1, ""),
             product_name: Helper.default_value_map(product_map, :product_name,  &is_binary/1, ""),
             product_slug: Helper.default_value_map(product_map, :product_slug,  &is_binary/1, ""),
             specifications_section:    Helper.default_value_map(product_map, :specifications_section,  &is_list/1, []),
+            videos:    Helper.default_value_map(product_map, :videos,  &is_list/1, []),
         }
 
     end

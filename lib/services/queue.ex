@@ -5,6 +5,8 @@ defmodule Webscraper.Queue do
     alias Webscraper.LinkQueue
     alias Webscraper.Helper
 
+    ##salvar o estado da fila em um arquivo
+    ##tentar colocar isso em um redis
     @process_name :queue_process
 
     @impl GenServer
